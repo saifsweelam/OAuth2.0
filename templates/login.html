@@ -22,7 +22,8 @@
     <body>
       <!-- Add where you want your sign-in button to render -->
 <!-- Use an image that follows the branding guidelines in a real app -->
-<button id="signinButton">Sign in with Google</button>
+<button id="signinButton">Google Signin</button>
+<div id="result"></div>
 <script>
   $('#signinButton').click(function() {
     // signInCallback defined in step 6.
@@ -31,32 +32,34 @@
 </script>
 <!-- Last part of BODY element in file index.html -->
 <script>
-    function signInCallback(authResult) {
-      if (authResult['code']) {
-    
-        // Hide the sign-in button now that the user is authorized, for example:
-        $('#signinButton').attr('style', 'display: none');
-    
-        // Send the code to the server
-        $.ajax({
-          type: 'POST',
-          url: 'http://example.com/storeauthcode',
-          // Always include an `X-Requested-With` header in every AJAX request,
-          // to protect against CSRF attacks.
-          headers: {
+    $('#signinButton').click(function() {
+      function signInCallback(authResult){
+        if (authResult['code']){
+          $('#signinButton').attr('style', 'display: none');
+          $.ajax({
+            type: 'POST',
+            url: '/gconnect?state={{STATE}}',
+            headers: {
             'X-Requested-With': 'XMLHttpRequest'
-          },
-          contentType: 'application/octet-stream; charset=utf-8',
-          success: function(result) {
-            // Handle or verify the server response.
-          },
-          processData: false,
-          data: authResult['code']
-        });
-      } else {
-        // There was an error.
+            },
+            contentType: 'application/octet-stream; charset=utf-8',
+            success:function(result){
+              $('#result').html('Login Successful!</br>'+ result + '</br>Redirecting...')
+                   setTimeout(function() {
+                    window.location.href = "/";
+                   }, 2000);
+            },
+            processData:false,
+            data:authResult['code']
+          });
+        } else{
+          // handle error
+          console.log('There was an error: ' + authResult['error']);
+          $('#result').html('Failed to make a server-side call. Check your configuration and console.');
+        }
       }
-    }
-    </script>
+      auth2.grantOfflineAccess().then(signInCallback);
+    });
+  </script>
     </body>
     </html>
