@@ -1,84 +1,62 @@
-<!DOCTYPE html>
-<html>
+<html itemscope itemtype="http://schema.org/Article">
 <head>
-
-  <!--LOAD PRE-REQUISITES FOR GOOGLE SIGN IN -->
-   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js">
+  <!-- BEGIN Pre-requisites -->
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js">
   </script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-  <script src="https://apis.google.com/js/client:platform.js?onload=start" async defer></script>
-  <script>
-    function start() {
-      gapi.load('auth2', function() {
-        auth2 = gapi.auth2.init({
-          client_id: 'YOUR CLIENT ID HERE'
-        });
-      });
-    }
+  <script src="https://apis.google.com/js/client:platform.js?onload=start" async defer>
   </script>
-
-<script src="//apis.google.com/js/platform.js?onload=start"> </script>
-
-<!-- END PRE-REQUISITES FOR GOOGLE SIGN IN -->
-
-
-</head>
-
-
-<body>  
-
-
-<!-- GOOGLE PLUS SIGN IN BUTTON-->
-
-          
-          <div id="signinButton">
-          <span class="g-signin"
-            data-scope="openid email"
-            data-clientid="YOUR_CLIENT_ID_GOES_HERE.apps.googleusercontent.com"
-            data-redirecturi="postmessage"
-            data-accesstype="offline"
-            data-cookiepolicy="single_host_origin"
-            data-callback="signInCallback"
-            data-approvalprompt="force">
-          </span>
-        </div>
-        <button id="signinButton">Google Signin</button>
-        <div id="result"></div>
-
-
-
-
-<!--END GOOGLE PLUS SIGN IN BUTTON -->
-<script>
-    $('#signinButton').click(function() {
-      function signInCallback(authResult){
-        if (authResult['code']){
-          $('#signinButton').attr('style', 'display: none');
-          $.ajax({
-            type: 'POST',
-            url: '/gconnect?state={{STATE}}',
-            headers: {
-            'X-Requested-With': 'XMLHttpRequest'
-            },
-            contentType: 'application/octet-stream; charset=utf-8',
-            success:function(result){
-              $('#result').html('Login Successful!</br>'+ result + '</br>Redirecting...')
-                   setTimeout(function() {
-                    window.location.href = "/";
-                   }, 2000);
-            },
-            processData:false,
-            data:authResult['code']
+  <!-- END Pre-requisites -->
+<!-- Continuing the <head> section -->
+    <script>
+        function start() {
+          gapi.load('auth2', function() {
+            auth2 = gapi.auth2.init({
+              client_id: '192403197982-njro8afj4uocu05lj93hi0fmdf3v3boo.apps.googleusercontent.com',
+              // Scopes to request in addition to 'profile' and 'email'
+              //scope: 'additional_scope'
+            });
           });
-        } else{
-          // handle error
-          console.log('There was an error: ' + authResult['error']);
-          $('#result').html('Failed to make a server-side call. Check your configuration and console.');
         }
+      </script>
+    </head>
+    <body>
+      <!-- Add where you want your sign-in button to render -->
+<!-- Use an image that follows the branding guidelines in a real app -->
+<button id="signinButton">Sign in with Google</button>
+<script>
+  $('#signinButton').click(function() {
+    // signInCallback defined in step 6.
+    auth2.grantOfflineAccess().then(signInCallback);
+  });
+</script>
+<!-- Last part of BODY element in file index.html -->
+<script>
+    function signInCallback(authResult) {
+      if (authResult['code']) {
+    
+        // Hide the sign-in button now that the user is authorized, for example:
+        $('#signinButton').attr('style', 'display: none');
+    
+        // Send the code to the server
+        $.ajax({
+          type: 'POST',
+          url: 'http://example.com/storeauthcode',
+          // Always include an `X-Requested-With` header in every AJAX request,
+          // to protect against CSRF attacks.
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+          },
+          contentType: 'application/octet-stream; charset=utf-8',
+          success: function(result) {
+            // Handle or verify the server response.
+          },
+          processData: false,
+          data: authResult['code']
+        });
+      } else {
+        // There was an error.
       }
-      auth2.grantOfflineAccess().then(signInCallback);
-    });
-  </script>
-  </body>
-
-  </html>
+    }
+    </script>
+    </body>
+    </html>
