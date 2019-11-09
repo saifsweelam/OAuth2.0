@@ -26,7 +26,7 @@ def restaurantMenuJSON(restaurant_id):
 def showLogin():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in xrange(32))
     login_session['state'] = state
-    return 'The current session state is {}'.format(login_session['state'])
+    return render_template('login.html')
 
 @app.route('/restaurant/<int:restaurant_id>/menu/<int:menu_id>/JSON')
 def menuItemJSON(restaurant_id, menu_id):
