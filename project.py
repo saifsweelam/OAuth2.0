@@ -3,7 +3,7 @@ app = Flask(__name__)
 
 from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker
-from database_setup import Base, Restaurant, MenuItem
+from DBSetup import Base, Restaurant, MenuItem, User
 from flask import session as login_session
 from oauth2client.client import flow_from_clientsecrets, FlowExchangeError
 import httplib2
@@ -13,7 +13,7 @@ import random, string
 
 CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())['web']['client_id']
 #Connect to Database and create database session
-engine = create_engine('sqlite:///restaurantmenu.db')
+engine = create_engine('sqlite:///restaurantmenuwithusers.db')
 Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
