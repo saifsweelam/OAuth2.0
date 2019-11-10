@@ -25,13 +25,6 @@
 <button id="signinButton" style="width : 395px; height: 90px;background: #f0f0f0 url('https://i1.wp.com/www.tillerhq.com/wp-content/uploads/2019/08/Sign-in-with-Google-Button-Large.png')"></button>
 <div id="result"></div>
 <script>
-  $('#signinButton').click(function() {
-    // signInCallback defined in step 6.
-    auth2.grantOfflineAccess().then(signInCallback);
-  });
-</script>
-<!-- Last part of BODY element in file index.html -->
-<script>
     $('#signinButton').click(function() {
       function signInCallback(authResult){
         if (authResult['code']){
